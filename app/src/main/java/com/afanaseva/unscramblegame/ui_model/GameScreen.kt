@@ -26,9 +26,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,6 +71,12 @@ fun GameScreen(
             onSubmitClicked = {gameViewModel.checkUserGuess()},
             onSkipClicked = {gameViewModel.skipWord()}
         )
+        if (gameUiState.isGameOver){
+            FinalScoreDialog(
+                score = gameUiState.score,
+                onPlayAgain = {gameViewModel.resetGame()}
+            )
+        }
     }
 }
 
@@ -180,4 +188,35 @@ fun GameLayout(
             )
         }
     }
+}
+
+@Composable
+fun FinalScoreDialog(
+    score: Int,
+    onPlayAgain: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    AlertDialog(
+        onDismissRequest = {
+
+        },
+        title = {Text(text = "Поздравляем!")},
+        text = {
+            Column {
+                Text(text = "Вы набрали..")
+                Text(
+                    text = "$score очков",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontSize = 36.sp
+                )
+            }
+        },
+        modifier = modifier,
+        dismissButton = {},
+        confirmButton = {
+            TextButton(onClick = onPlayAgain) {
+                Text(text = "Играть снова")
+            }
+        }
+    )
 }
